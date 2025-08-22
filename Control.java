@@ -1,5 +1,6 @@
 // Se declaran las librerias necesarias para esta clase.
 import java.util.ArrayList;
+import java.util.Objects;
 
 // Se anuncia la creación de la clase.
 public class Control {
@@ -10,6 +11,81 @@ public class Control {
     public Control() {
         instrumentos = new ArrayList<>();
     }
+
+    // Getter para obtener los instrumentos que existen.
+    public ArrayList<Instrumento> getInstrumentos() {
+        return instrumentos;
+    }
+
+    // Getter para obtener cierto instrumento dependiendo la posicion.
+    public Instrumento getInstrumento(int posicion) {
+        return instrumentos.get(posicion);
+    }
+
+    // Metodos generales para el control de instrumentos.
+    // Metodo para eliminar un instrumento.
+    public Instrumento eliminarInstrumento(Instrumento instrumento) {
+        instrumentos.remove(instrumento);
+        return instrumento;
+    }
+
+    // Metodo para consultar instrumentos de acuerdo a su autor.
+    public String consultarPorAutor(String autor) {
+        String resultadoDeConsulta = "";
+        for (Instrumento instrumento : instrumentos) {
+            ArrayList<String> consultaPorAutores = instrumento.getAutores();
+            if (consultaPorAutores.contains(autor)) {
+                resultadoDeConsulta += instrumento.getNombre() + "\n";
+            }
+        }
+        return resultadoDeConsulta;
+    }
+
+    // Metodo para consultar instrumentos de acuerdo a su utilidad.
+    public String ConsultaPorUtilidad(String utilidad) {
+        String resultadoDeConsulta = "";
+        for (Instrumento instrumento : instrumentos) {
+            if (instrumento.getTipo().equalsIgnoreCase(utilidad)) {
+                resultadoDeConsulta += instrumento.getNombre() + "\n";
+            }
+        }
+        return resultadoDeConsulta;
+    }
+
+    // Metodo para consultar instrumentos de acuerdo a su tipo.
+    public String consultaPorTipo(String tipo) {
+        String resultadoDeConsulta = "";
+        for (Instrumento instrumento : instrumentos) {
+            if (instrumento.getTipo().equalsIgnoreCase(tipo)) {
+                resultadoDeConsulta += instrumento.getNombre() + "\n";
+            }
+        }
+        return resultadoDeConsulta;
+    }
+
+    // Metodo para consultar instrumentos de acuerdo a la condicion de enfoque asociada.
+    public String consultaPorCondicion(String condicion) {
+        String resultadoDeConsulta = "";
+        for (Instrumento instrumento : instrumentos) {
+            if (instrumento.getTipo().equalsIgnoreCase(condicion)) {
+                resultadoDeConsulta += instrumento.getNombre() + "\n";
+            }
+        }
+        return resultadoDeConsulta;
+    }
+
+    // Metodo para consultar los instrumentos que esten evaluados y sean confiables.
+    public String constultaPorEvaluacion(Boolean evaluacion) {
+        String resultadoDeConsulta = "";
+        for (Instrumento instrumento : instrumentos) {
+            if(instrumento.estaEvaluado() == evaluacion){
+                resultadoDeConsulta += instrumento.getNombre() + "\n";
+            }
+        }
+        return resultadoDeConsulta;
+    }
+
+
 
 
 }
