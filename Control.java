@@ -85,6 +85,25 @@ public class Control {
         return resultadoDeConsulta;
     }
 
+    // Metodo para consultar instrumentos de acuerdo a su clave.
+    public String consultaPorClave(int clave) {
+        String resultadoDeConsulta = "";
+        for (Instrumento instrumento : instrumentos) {
+            if(instrumento.getClave() == clave){
+                resultadoDeConsulta += instrumento.getNombre() + "\n";
+            }
+        }
+        return resultadoDeConsulta;
+    }
+
+    // Muestra todos los instrumentos del sistema.
+    public String mostrarTodosLosInstrumentos() {
+        String resultadoDeConsulta = "";
+        for (Instrumento instrumento : instrumentos) {
+            resultadoDeConsulta += instrumento.getNombre() + "\n";
+        }
+        return resultadoDeConsulta;
+    }
 
 
 
