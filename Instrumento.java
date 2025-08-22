@@ -53,6 +53,9 @@ public class Instrumento {
     public int getClave() {
         return clave;
     }
+    public String getPrimerAutor() {
+        return autores.getFirst();
+    }
 
     // Se crean todos los respetictivos setters de la clase.
     public void setNombre(String nombre) {

@@ -45,7 +45,7 @@ public class Control {
     public String ConsultaPorUtilidad(String utilidad) {
         String resultadoDeConsulta = "";
         for (Instrumento instrumento : instrumentos) {
-            if (instrumento.getTipo().equalsIgnoreCase(utilidad)) {
+            if (instrumento.getUtilidad().equalsIgnoreCase(utilidad)) {
                 resultadoDeConsulta += instrumento.getNombre() + "\n";
             }
         }
@@ -67,7 +67,7 @@ public class Control {
     public String consultaPorCondicion(String condicion) {
         String resultadoDeConsulta = "";
         for (Instrumento instrumento : instrumentos) {
-            if (instrumento.getTipo().equalsIgnoreCase(condicion)) {
+            if (instrumento.getCondicion().equalsIgnoreCase(condicion)) {
                 resultadoDeConsulta += instrumento.getNombre() + "\n";
             }
         }
@@ -105,6 +105,16 @@ public class Control {
         return resultadoDeConsulta;
     }
 
+    // Mediante este metodo se ordenan los instrumentos por clave.
+    public void ordenarPorClave() {
+        instrumentos.sort((a1, a2)
+                -> a1.getClave() - a2.getClave());
+    }
 
+    // Metodo para ordenar los instrumentos por su primer autor.
+    public void ordenarPorPrimerAutor() {
+        instrumentos.sort((a1, a2)
+                -> a1.getPrimerAutor().compareToIgnoreCase(a2.getPrimerAutor()));
+    }
 
 }
