@@ -56,31 +56,4 @@ public class Instrumento {
     public String getPrimerAutor() {
         return autores.getFirst();
     }
-
-
-    // Se crean todos los respetictivos setters de la clase.
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    public void setUtilidad(String utilidad) {
-        this.utilidad = utilidad;
-    }
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-    public void setCondicion(String condicion) {
-        this.condicion = condicion;
-    }
-    public void setAutores(ArrayList<String> autores) {
-        this.autores = autores;
-    }
-    public void setEvaluado(boolean evaluado) {
-        this.evaluado = evaluado;
-    }
-    public void setLugarDeEvalacion(String lugarDeEvalacion) {
-        this.lugarDeEvalacion = lugarDeEvalacion;
-    }
-    public void setClave(int clave) {
-        this.clave = clave;
-    }
 }
