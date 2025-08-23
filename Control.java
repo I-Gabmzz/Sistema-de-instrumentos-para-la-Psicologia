@@ -1,6 +1,7 @@
 // Se declaran las librerias necesarias para esta clase.
 import java.util.ArrayList;
-import java.util.Objects;
+import java.io.*;
+import java.util.Arrays;
 
 // Se anuncia la creación de la clase.
 public class Control {
@@ -10,6 +11,7 @@ public class Control {
     // Se declara el metodo constructor del control.
     public Control() {
         instrumentos = new ArrayList<>();
+        recuperarArchivo();
     }
 
     // Getter para obtener los instrumentos que existen.
@@ -17,15 +19,17 @@ public class Control {
         return instrumentos;
     }
 
-    // Getter para obtener cierto instrumento dependiendo la posicion.
-    public Instrumento getInstrumento(int posicion) {
-        return instrumentos.get(posicion);
+    // Metodos generales para el control de instrumentos.
+    // Metodo para agregar al control un instrumento.
+    public void darDeAltaUnInstrumento(Instrumento instrumento) {
+        instrumentos.add(instrumento);
+        actualizarArchivo();
     }
 
-    // Metodos generales para el control de instrumentos.
     // Metodo para eliminar un instrumento.
     public Instrumento eliminarInstrumento(Instrumento instrumento) {
         instrumentos.remove(instrumento);
+        actualizarArchivo();
         return instrumento;
     }
 
@@ -115,6 +119,62 @@ public class Control {
     public void ordenarPorPrimerAutor() {
         instrumentos.sort((a1, a2)
                 -> a1.getPrimerAutor().compareToIgnoreCase(a2.getPrimerAutor()));
+    }
+
+    // Metodo para sobreescribir el archivo que contiene a los instrumentos.
+    public void actualizarArchivo() {
+        try {
+            FileWriter escritor = new FileWriter("instrumentos.txt");
+            for (Instrumento instrumento : instrumentos) {
+                String autoresString = "";
+                for (String autor : instrumento.getAutores()) {
+                    autoresString += autor + ";";
+                }
+
+                escritor.write(instrumento.getNombre() + "," +
+                        instrumento.getClave() + "," +
+                        instrumento.getUtilidad() + "," +
+                        instrumento.getTipo() + "," +
+                        instrumento.getCondicion() + "," +
+                        autoresString + "," +
+                        instrumento.estaEvaluado() + "," +
+                        instrumento.getLugarDeEvalacion() + "\n");
+            }
+            escritor.close();
+        } catch (IOException error) {
+            System.out.println("Error al actualizar el archivo: " + error.getMessage());
+        }
+    }
+
+    // Metodo para recuperar el archivo que contiene la información de los instrumentos.
+    public void recuperarArchivo() {
+        try {
+            instrumentos.clear();
+            BufferedReader lector = new BufferedReader(new FileReader("instrumentos.txt"));
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                Instrumento instrumento = getInstrumentoDelArchivo(linea);
+                instrumentos.add(instrumento);
+                }
+            lector.close();
+        } catch (IOException error) {
+            System.out.println("Error al leer archivo" + error.getMessage());
+        }
+    }
+
+    // Metodo auxiliar para obtener directamente el instrumento del archivo.
+    public Instrumento getInstrumentoDelArchivo(String linea) {
+        String[] partesDelInstrumento = linea.split(",");
+        return new Instrumento(
+                partesDelInstrumento[0],
+                partesDelInstrumento[2],
+                partesDelInstrumento[3],
+                partesDelInstrumento[4],
+                new ArrayList<>(Arrays.asList(partesDelInstrumento[5].split(";"))),
+                Boolean.parseBoolean(partesDelInstrumento[6]),
+                partesDelInstrumento[7],
+                Integer.parseInt(partesDelInstrumento[1])
+        );
     }
 
 }

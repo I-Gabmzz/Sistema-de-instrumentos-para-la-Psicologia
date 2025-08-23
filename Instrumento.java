@@ -28,7 +28,7 @@ public class Instrumento {
         this.clave = clave;
     }
 
-    // Se crean todos los respetictivos getters de la clase.
+    // Se crean todos los respectivos getters de la clase.
     public String getNombre() {
         return nombre;
     }
@@ -56,6 +56,7 @@ public class Instrumento {
     public String getPrimerAutor() {
         return autores.getFirst();
     }
+
 
     // Se crean todos los respetictivos setters de la clase.
     public void setNombre(String nombre) {
