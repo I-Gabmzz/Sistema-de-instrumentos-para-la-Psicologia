@@ -206,7 +206,6 @@ public class Sistema {
         if (claveStr == null) return;
 
         int clave = Integer.parseInt(claveStr);
-        Control control = new Control();
 
         Instrumento instrumentoAEliminar = null;
         for (Instrumento instrumento : control.getInstrumentos()) {
