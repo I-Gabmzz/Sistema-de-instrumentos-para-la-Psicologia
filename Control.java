@@ -22,8 +22,10 @@ public class Control {
     // Metodos generales para el control de instrumentos.
     // Metodo para agregar al control un instrumento.
     public void darDeAltaUnInstrumento(Instrumento instrumento) {
-        instrumentos.add(instrumento);
-        actualizarArchivo();
+        if (instrumento != null) {
+            instrumentos.add(instrumento);
+            actualizarArchivo();
+        }
     }
 
     // Metodo para eliminar un instrumento.
@@ -34,12 +36,15 @@ public class Control {
     }
 
     // Metodo para consultar instrumentos de acuerdo a su autor.
-    public String consultarPorAutor(String autor) {
+    public String consultarPorAutor(String autorBuscado) {
         String resultadoDeConsulta = "";
         for (Instrumento instrumento : instrumentos) {
-            ArrayList<String> consultaPorAutores = instrumento.getAutores();
-            if (consultaPorAutores.contains(autor)) {
-                resultadoDeConsulta += instrumento.getNombre() + "\n";
+            ArrayList<String> autores = instrumento.getAutores();
+            for (String autor : autores) {
+                if (autor.equalsIgnoreCase(autorBuscado)) {
+                    resultadoDeConsulta += darFormatoAInstrumento(instrumento);
+                    break;
+                }
             }
         }
         return resultadoDeConsulta;
@@ -50,7 +55,7 @@ public class Control {
         String resultadoDeConsulta = "";
         for (Instrumento instrumento : instrumentos) {
             if (instrumento.getUtilidad().equalsIgnoreCase(utilidad)) {
-                resultadoDeConsulta += instrumento.getNombre() + "\n";
+                resultadoDeConsulta += darFormatoAInstrumento(instrumento);
             }
         }
         return resultadoDeConsulta;
@@ -61,7 +66,7 @@ public class Control {
         String resultadoDeConsulta = "";
         for (Instrumento instrumento : instrumentos) {
             if (instrumento.getTipo().equalsIgnoreCase(tipo)) {
-                resultadoDeConsulta += instrumento.getNombre() + "\n";
+                resultadoDeConsulta += darFormatoAInstrumento(instrumento);
             }
         }
         return resultadoDeConsulta;
@@ -72,7 +77,7 @@ public class Control {
         String resultadoDeConsulta = "";
         for (Instrumento instrumento : instrumentos) {
             if (instrumento.getCondicion().equalsIgnoreCase(condicion)) {
-                resultadoDeConsulta += instrumento.getNombre() + "\n";
+                resultadoDeConsulta += darFormatoAInstrumento(instrumento);
             }
         }
         return resultadoDeConsulta;
@@ -83,7 +88,7 @@ public class Control {
         String resultadoDeConsulta = "";
         for (Instrumento instrumento : instrumentos) {
             if(instrumento.estaEvaluado() == evaluacion){
-                resultadoDeConsulta += instrumento.getNombre() + "\n";
+                resultadoDeConsulta += darFormatoAInstrumento(instrumento);
             }
         }
         return resultadoDeConsulta;
@@ -94,7 +99,7 @@ public class Control {
         String resultadoDeConsulta = "";
         for (Instrumento instrumento : instrumentos) {
             if(instrumento.getClave() == clave){
-                resultadoDeConsulta += instrumento.getNombre() + "\n";
+                resultadoDeConsulta += darFormatoAInstrumento(instrumento);
             }
         }
         return resultadoDeConsulta;
@@ -104,7 +109,7 @@ public class Control {
     public String mostrarTodosLosInstrumentos() {
         String resultadoDeConsulta = "";
         for (Instrumento instrumento : instrumentos) {
-            resultadoDeConsulta += instrumento.getNombre() + "\n";
+            resultadoDeConsulta += darFormatoAInstrumento(instrumento);
         }
         return resultadoDeConsulta;
     }
@@ -175,6 +180,20 @@ public class Control {
                 partesDelInstrumento[7],
                 Integer.parseInt(partesDelInstrumento[1])
         );
+    }
+
+    // Metodo para obtener la forma de impresion del instrumento.
+    private String darFormatoAInstrumento(Instrumento instrumento) {
+        return  "+----------------------------------------+\n" +
+                "Nombre: " + instrumento.getNombre() + "\n" +
+                "Clave: " + instrumento.getClave() + "\n" +
+                "Utilidad: " + instrumento.getUtilidad() + "\n" +
+                "Tipo: " + instrumento.getTipo() + "\n" +
+                "Condición: " + instrumento.getCondicion() + "\n" +
+                "Autores: " + String.join(", ", instrumento.getAutores()) + "\n" +
+                "Evaluado: " + (instrumento.estaEvaluado() ? "Sí" : "No") + "\n" +
+                "Lugar de evaluación: " + instrumento.getLugarDeEvalacion() + "\n" +
+                "+----------------------------------------+\n\n";
     }
 
 }

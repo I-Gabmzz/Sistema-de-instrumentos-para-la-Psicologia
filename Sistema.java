@@ -1,12 +1,27 @@
+// Se declaran las librerias necesarias para esta clase.
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
+// Se anuncia la creación de la clase.
 public class Sistema {
 
-    public static void main(String[] args) {
-        mostrarMenuConsultas();
+    // Se declaran los atributos pertenecientes a la clase.
+    private static Control control; // Control de todos los instrumentos.
+    static JTextArea areaTexto = new JTextArea(); // Jtext del area de consulta.
+
+    // Se crea el constructor de la clase sistema.
+    public Sistema(){
+        control = new Control();
+        menuPrincipal();
     }
 
+    public static void main(String[] args) {
+       new Sistema();
+    }
+
+    // Metodo que muestra y controla totalmente la interfaz principal (menu de agregar, consultar, salir, eliminar y creditos).
+    // Toda esta interfaz esta personalizada y se basa en el uso de java swing y java awt.
     public static void menuPrincipal() {
         ImageIcon imagenIcono = new ImageIcon("Recursos/menuPrincipal.png");
 
@@ -26,7 +41,7 @@ public class Sistema {
 
         JPanel panelBotones = new JPanel(new GridLayout(5, 1, 20, 20));
         panelBotones.setOpaque(false);
-        panelBotones.setBorder(BorderFactory.createEmptyBorder(0, 70, 100, 0)); // 70px margen izquierdo
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(0, 70, 100, 0));
 
         JButton botonAgregar = new JButton("Agregar Instrumento");
         JButton botonEliminar = new JButton("Eliminar Instrumento");
@@ -34,7 +49,7 @@ public class Sistema {
         JButton botonCreditos = new JButton("Créditos");
         JButton botonSalir = new JButton("Salir");
 
-        Font fuenteBotones = new Font("Noto Sans", Font.BOLD, 36); // 36px enorme
+        Font fuenteBotones = new Font("Noto Sans", Font.BOLD, 36);
         Color colorBoton = new Color(255, 255, 255);
 
         for (JButton boton : new JButton[]{botonAgregar, botonEliminar, botonConsultar, botonCreditos, botonSalir}) {
@@ -42,7 +57,7 @@ public class Sistema {
             boton.setBackground(colorBoton);
             boton.setFocusPainted(false);
             boton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-            boton.setPreferredSize(new Dimension(450, 90)); // Más grandes para la fuente de 36px
+            boton.setPreferredSize(new Dimension(450, 90));
             boton.setOpaque(true);
             boton.setContentAreaFilled(true);
             boton.setBorderPainted(true);
@@ -61,12 +76,16 @@ public class Sistema {
         panelPrincipal.add(panelSur, BorderLayout.SOUTH);
 
         botonAgregar.addActionListener(e -> {
+            control.darDeAltaUnInstrumento(llenarInstrumento());
         });
 
         botonEliminar.addActionListener(e -> {
+            eliminarInstrumento();
         });
 
         botonConsultar.addActionListener(e -> {
+            mostrarMenuConsultas();
+            ventana.dispose();
         });
 
         botonCreditos.addActionListener(e -> {
@@ -91,7 +110,126 @@ public class Sistema {
         ventana.setVisible(true);
     }
 
+    // Metodo que permite recabar la información del instrumento para así lograr añadirlo al sistema.
+    public static Instrumento llenarInstrumento() {
+        try {
+            String nombre = JOptionPane.showInputDialog("Ingrese el nombre del instrumento:");
+            if (nombre == null) return null;
+
+            String claveStr = JOptionPane.showInputDialog("Ingrese la clave del instrumento:");
+            if (claveStr == null) return null;
+            int clave = Integer.parseInt(claveStr);
+
+            Object[] opcionUtilidad = {"Manejar", "Identificar"};
+            int utilidadInt = JOptionPane.showOptionDialog(
+                    null,
+                    "Seleccione la utilidad", "Utilidad",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    opcionUtilidad,
+                    opcionUtilidad[0]
+            );
+            if (utilidadInt == JOptionPane.CLOSED_OPTION) return null;
+            String utilidad = (String) opcionUtilidad[utilidadInt];
+
+            Object[] opcionTipo = {"Test", "Cuestionario", "Escala"};
+            Object tipoObj = JOptionPane.showInputDialog(
+                    null,
+                    "Seleccione el tipo", "Tipo",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    opcionTipo,
+                    opcionTipo[0]
+            );
+            if (tipoObj == null) return null;
+            String tipo = tipoObj.toString();
+            Object[] opcionCondicion = {"Ansiedad", "Estrés", "Ambos"};
+            int condicionInt = JOptionPane.showOptionDialog(
+                    null,
+                    "Seleccione la condición", "Condición",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    opcionCondicion,
+                    opcionCondicion[0]
+            );
+            if (condicionInt == JOptionPane.CLOSED_OPTION) return null;
+            String condicion = (String) opcionCondicion[condicionInt];
+
+            String numAutoresStr = JOptionPane.showInputDialog("Ingrese el número de autores:");
+            if (numAutoresStr == null) return null;
+            int numAutores = Integer.parseInt(numAutoresStr);
+
+            ArrayList<String> autores = new ArrayList<>();
+            for (int i = 0; i < numAutores; i++) {
+                String autor = JOptionPane.showInputDialog("Ingrese el nombre del autor " + (i + 1) + ":");
+                if (autor == null) return null;
+                autores.add(autor);
+            }
+
+            int evaluadoInt = JOptionPane.showConfirmDialog(
+                    null,
+                    "¿El instrumento está evaluado y es confiable?",
+                    "Evaluado",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (evaluadoInt == JOptionPane.CLOSED_OPTION) return null;
+            boolean evaluado = (evaluadoInt == JOptionPane.YES_OPTION);
+
+            String lugarEvaluacion = JOptionPane.showInputDialog("Ingrese el lugar de evaluación:");
+            if (lugarEvaluacion == null) return null;
+
+            return new Instrumento(
+                    nombre,
+                    utilidad,
+                    tipo,
+                    condicion,
+                    autores,
+                    evaluado,
+                    lugarEvaluacion,
+                    clave
+            );
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error en formato numérico: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al crear el instrumento: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
+    // Metodo para eliminar un instrumento con base en su clave.
+    public static void eliminarInstrumento() {
+        String claveStr = JOptionPane.showInputDialog("Ingrese la clave del instrumento a eliminar:");
+        if (claveStr == null) return;
+
+        int clave = Integer.parseInt(claveStr);
+        Control control = new Control();
+
+        Instrumento instrumentoAEliminar = null;
+        for (Instrumento instrumento : control.getInstrumentos()) {
+            if (instrumento.getClave() == clave) {
+                instrumentoAEliminar = instrumento;
+                break;
+            }
+        }
+
+        if (instrumentoAEliminar != null) {
+            control.eliminarInstrumento(instrumentoAEliminar);
+            JOptionPane.showMessageDialog(null, "Instrumento eliminado: " + instrumentoAEliminar.getNombre());
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró instrumento con clave: " + clave);
+        }
+    }
+
+    // Metodo que permite mostrar la segunda interfaz de consulta, en donde se permite realizar
+    // diversas consultas en base a algun atributo.
     public static void mostrarMenuConsultas() {
+        if (areaTexto != null) {
+            areaTexto.setText("");
+        }
         ImageIcon imagenIcono = new ImageIcon("Recursos/menuDeConsultas.png");
 
         JFrame ventana = new JFrame("Sistema de Consultas");
@@ -156,17 +294,16 @@ public class Sistema {
         panelDerecho.setOpaque(false);
         panelDerecho.setBorder(BorderFactory.createEmptyBorder(100, 0, 100, 100));
 
-        JTextArea areaTexto = new JTextArea();
         areaTexto.setFont(new Font("Noto Sans", Font.PLAIN, 14));
         areaTexto.setEditable(false);
         areaTexto.setLineWrap(true);
         areaTexto.setWrapStyleWord(true);
-        areaTexto.setBackground(new Color(255, 255, 255, 220));
+        areaTexto.setBackground(new Color(255, 255, 255));
         areaTexto.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 2),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-        areaTexto.setCursor(Cursor.getDefaultCursor());
+
 
         JScrollPane scrollPane = new JScrollPane(areaTexto);
         scrollPane.setOpaque(false);
@@ -184,25 +321,33 @@ public class Sistema {
         panelPrincipal.add(horizontalBox, BorderLayout.CENTER);
 
         botonPorAutor.addActionListener(e -> {
-
+            consultarPorAutor();
         });
+
         botonPorTipo.addActionListener(e -> {
-
+            consultarPorTipo();
         });
+
         botonPorUtilidad.addActionListener(e -> {
-
+            consultarPorUtilidad();
         });
+
         botonPorCondicion.addActionListener(e -> {
-
+            consultarPorCondicion();
         });
+
         botonPorEvaluacion.addActionListener(e -> {
-
+            consultarPorEvaluacion();
         });
+
         botonOrdenadosClave.addActionListener(e -> {
-
+            control.ordenarPorClave();
+            areaTexto.setText(control.mostrarTodosLosInstrumentos());
         });
-        botonOrdenadosAutor.addActionListener(e -> {
 
+        botonOrdenadosAutor.addActionListener(e -> {
+            control.ordenarPorPrimerAutor();
+            areaTexto.setText(control.mostrarTodosLosInstrumentos());
         });
 
         botonRegresar.addActionListener(e -> {
@@ -214,6 +359,125 @@ public class Sistema {
         ventana.setVisible(true);
     }
 
+    // Metodo que permite consultar por autor y mostrarlo en la interfaz.
+    public static void consultarPorAutor() {
+        String autor = JOptionPane.showInputDialog("Ingrese el nombre del autor a buscar:");
+        String resultado = control.consultarPorAutor(autor);
+
+        if (resultado.isEmpty()) {
+            areaTexto.setText("No se encontraron instrumentos del autor: " + autor);
+        } else {
+            areaTexto.setText("Instrumentos del autor " + autor + ":\n\n" + resultado);
+        }
+    }
+
+    // Metodo que permite consultar por tipo y mostrarlo en la interfaz.
+    public static void consultarPorTipo() {
+        Object[] opcionTipo = {"Test", "Cuestionario", "Escala"};
+        Object tipoObj = JOptionPane.showInputDialog(
+                null,
+                "Seleccione el tipo a buscar", "Tipo",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcionTipo,
+                opcionTipo[0]
+        );
+
+        if (tipoObj != null) {
+            String tipo = tipoObj.toString();
+            Control control = new Control();
+            String resultado = control.consultaPorTipo(tipo);
+
+            if (resultado.isEmpty()) {
+                areaTexto.setText("No se encontraron instrumentos del tipo: " + tipo);
+            } else {
+                areaTexto.setText("Instrumentos tipo: " + tipo + ":\n\n" + resultado);
+            }
+        }
+    }
+
+    // Metodo que permite consultar por utilidad y mostrarlo en la interfaz.
+    public static void consultarPorUtilidad() {
+        Object[] opcionUtilidad = {"Manejar", "Identificar"};
+        int utilidadInt = JOptionPane.showOptionDialog(
+                null,
+                "Seleccione la utilidad a buscar", "Utilidad",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcionUtilidad,
+                opcionUtilidad[0]
+        );
+
+        if (utilidadInt != JOptionPane.CLOSED_OPTION) {
+            String utilidad = (String) opcionUtilidad[utilidadInt];
+            Control control = new Control();
+            String resultado = control.ConsultaPorUtilidad(utilidad);
+
+            if (resultado.isEmpty()) {
+                areaTexto.setText("No se encontraron instrumentos con la utilidad: " + utilidad);
+            } else {
+                areaTexto.setText("Instrumentos con la utilidad: " + utilidad + ":\n\n" + resultado);
+            }
+        }
+    }
+
+    // Metodo que permite consultar por condición y mostrarlo en la interfaz.
+    public static void consultarPorCondicion() {
+        Object[] opcionCondicion = {"Ansiedad", "Estrés", "Ambos"};
+        int condicionInt = JOptionPane.showOptionDialog(
+                null,
+                "Seleccione la condición a buscar", "Condición",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcionCondicion,
+                opcionCondicion[0]
+        );
+
+        if (condicionInt != JOptionPane.CLOSED_OPTION) {
+            String condicion = (String) opcionCondicion[condicionInt];
+            Control control = new Control();
+            String resultado = control.consultaPorCondicion(condicion);
+
+            if (resultado.isEmpty()) {
+                areaTexto.setText("No se encontraron instrumentos de la condición: " + condicion);
+            } else {
+                areaTexto.setText("Instrumentos para la condición: " + condicion + ":\n\n" + resultado);
+            }
+        }
+    }
+
+    // Metodo que permite consultar por evaluación y mostrarlo en la interfaz.
+    public static void consultarPorEvaluacion() {
+        Object[] opciones = {"Sí Evaluados", "No evaluados"};
+        int opcion = JOptionPane.showOptionDialog(
+                null,
+                "¿Buscar instrumentos evaluados o no evaluados?",
+                "Tipo de evaluación",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        if (opcion != JOptionPane.CLOSED_OPTION) {
+            boolean buscarEvaluados = (opcion == 0);
+            Control control = new Control();
+            String resultado = control.constultaPorEvaluacion(buscarEvaluados);
+
+            String tipoBusqueda = buscarEvaluados ? "evaluados" : "no evaluados";
+
+            if (resultado.isEmpty()) {
+                areaTexto.setText("No se encontraron instrumentos " + tipoBusqueda);
+            } else {
+                areaTexto.setText("Instrumentos " + tipoBusqueda + ":\n\n" + resultado);
+            }
+        }
+    }
+
+    // Metodo que permite mostrar una ventana emergente con la información del autor.
     public static void mostrarCreditos() {
         JPanel panelCreditos = new JPanel(new BorderLayout(10, 10));
         panelCreditos.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -257,5 +521,6 @@ public class Sistema {
         creditos.setLocationRelativeTo(null);
         creditos.setVisible(true);
     }
+
 }
 
